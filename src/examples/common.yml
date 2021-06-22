@@ -1,0 +1,36 @@
+description: >
+  Publish training resources in Google Drive.
+usage:
+  version: 2.1
+
+  orbs:
+    training-material: zenika/training-material@w.x
+    training-resource: zenika-training/training-resource@x.y
+
+  workflows:
+    version: 2
+
+    build-and-update:
+      triggers:
+        - schedule:
+            cron: "0 0 * * 6"
+            filters:
+              branches:
+                only:
+                  - master
+                  - main
+      jobs:
+        - training-material/build
+        # Publish a PDF file
+        - training-resource/publish:
+            requires:
+              - training-material/build
+            source: pdf/Zenika-training-material-Workbook.pdf
+            file-id: hCfQFA9fEHHa7rXJSYXXUy7ABSw6UWTi_
+            context: training-deploy-zenika
+        # Publish a folder with tar.gz compression
+        - training-resource/publish:
+            source: Exercices/workspaces
+            file-id: ya4M9cEDVKKdx452UggEjYbtiVVz8TPz_
+            compression-mode: tar.gz
+            context: training-deploy-zenika
