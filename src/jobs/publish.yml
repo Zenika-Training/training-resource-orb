@@ -1,0 +1,63 @@
+description: >
+  Publish training resource in Google Drive.
+
+parameters:
+  source:
+    description: The path to the resource to publish
+    type: string
+  file-id:
+    description: The file id in Google Drive
+    type: string
+  compression-mode:
+    description: The compression mode for the resource
+    type: enum
+    enum: ["none", "zip", "tar.gz", "tar.xz"]
+    default: none
+docker:
+  - image: gcr.io/oauth2l/oauth2l
+steps:
+  - checkout
+  - attach_workspace:
+      at: ./
+  - run:
+      name: Compress resource
+      command: |
+        SRC="<< parameters.source >>"
+        case << parameters.compression-mode >> in
+          none)
+            if [ -d "${SRC}" ]; then
+              echo "Cannot use a folder as source without compression" >&2
+              exit 1
+            fi
+            ;;
+          zip)
+            apk add --no-cache zip
+            ARCHIVE=$(mktemp -u).zip
+            cd "$(dirname "${SRC}")"
+            zip -r ${ARCHIVE} "$(basename "${SRC}")"
+            cd -
+            SRC=${ARCHIVE}
+            ;;
+          tar.gz)
+            ARCHIVE=$(mktemp -u).tar.gz
+            tar -czf ${ARCHIVE} -C "$(dirname "${SRC}")" "$(basename "${SRC}")"
+            SRC=${ARCHIVE}
+            ;;
+          tar.xz)
+            apk add --no-cache xz
+            ARCHIVE=$(mktemp -u).tar.xz
+            tar -cJf ${ARCHIVE} -C "$(dirname "${SRC}")" "$(basename "${SRC}")"
+            SRC=${ARCHIVE}
+            ;;
+        esac
+        echo "export SRC='${SRC}'" >> .vars.env
+  - run:
+      name: Publish resource
+      command: |
+        echo ${GAE_KEY_FILE_CONTENT} > service-key.json
+        . .vars.env
+        oauth2l curl \
+        --credentials service-key.json \
+        --scope drive,drive.file \
+        --url "https://www.googleapis.com/upload/drive/v3/files/<< parameters.file-id >>?supportsAllDrives=true&uploadType=media" \
+        -- --request PATCH --data-binary @"${SRC}"
