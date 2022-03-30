@@ -23,6 +23,12 @@ steps:
       name: Compress resource
       command: |
         SRC="<< parameters.source >>"
+        if [ ! -e "$SRC" ]; then
+          echo "Source file '$SRC' does not exist" >&2
+          echo "Here is the content of the workspace"
+          find .
+          exit 1
+        fi
         case << parameters.compression-mode >> in
           none)
             if [ -d "${SRC}" ]; then
