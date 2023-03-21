@@ -1,0 +1,18 @@
+description: >
+  Download training resources from Google Drive.
+usage:
+  version: 2.1
+
+  orbs:
+    training-resource: zenika-training/training-resource@x.y
+
+  workflows:
+    version: 2
+    download-and-save-to-workspace:
+      jobs:
+        # Download  PDF file from google drive
+        - training-resource/download:
+            destination: pdf/Zenika-training-material-Workbook-Copy.pdf
+            file-id: hCfQFA9fEHHa7rXJSYXXUy7ABSw6UWTi_
+            # access to google service account env variable
+            context: training-deploy-zenika

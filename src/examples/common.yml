@@ -34,10 +34,3 @@ usage:
             file-id: ya4M9cEDVKKdx452UggEjYbtiVVz8TPz_
             compression-mode: tar.gz
             context: training-deploy-zenika
-        # Download previous PDF file
-        - training-resource/download:
-            requires:
-              - training-resource/publish
-            destination: pdf/Zenika-training-material-Workbook-Copy.pdf
-            file-id: hCfQFA9fEHHa7rXJSYXXUy7ABSw6UWTi_
-            context: training-deploy-zenika

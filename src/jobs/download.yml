@@ -21,5 +21,9 @@ steps:
         oauth2l curl \
         --credentials service-key.json \
         --scope drive,drive.file \
-        --url "https://www.googleapis.com/drive/v3/files/<< parameters.file-id >>?alt=media&source=downloadUrl&supportsAllDrives=true" \
-        --request GET --output "<< parameters.destination >>"
+        --url "https://www.googleapis.com/drive/v3/files/<< parameters.file-id >>?alt=media&supportsAllDrives=true" \
+         -- --request GET --output "<< parameters.destination >>" --create-dirs
+  - persist_to_workspace:
+      root: ./
+      paths:
+        - << parameters.destination >>
