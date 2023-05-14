@@ -1,0 +1,29 @@
+description: >
+  Download training resource from Google Drive.
+
+parameters:
+  file-id:
+    description: The file id in Google Drive
+    type: string
+  destination:
+    description: The path where the file will be downloaded
+    type: string
+docker:
+  - image: gcr.io/oauth2l/oauth2l
+steps:
+  - checkout
+  - attach_workspace:
+      at: ./
+  - run:
+      name: Download resource
+      command: |
+        echo ${GAE_KEY_FILE_CONTENT} > service-key.json
+        oauth2l curl \
+        --credentials service-key.json \
+        --scope drive,drive.file \
+        --url "https://www.googleapis.com/drive/v3/files/<< parameters.file-id >>?alt=media&supportsAllDrives=true" \
+         -- --request GET --output "<< parameters.destination >>" --create-dirs
+  - persist_to_workspace:
+      root: ./
+      paths:
+        - << parameters.destination >>

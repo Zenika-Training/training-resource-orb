@@ -1,7 +1,7 @@
 version: 2.1
 
 description: >
-  Publish Zenika training resource in Google Drive.
+  Publish or download Zenika training resource in Google Drive.
 
 display:
   source_url: "https://www.github.com/Zenika-Training/training-resource-orb"
