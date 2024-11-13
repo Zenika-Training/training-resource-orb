@@ -14,7 +14,8 @@ parameters:
     enum: ["none", "zip", "tar.gz", "tar.xz"]
     default: none
 docker:
-  - image: gcr.io/oauth2l/oauth2l
+    # image copiée depuis gcr.io/oauth2l/oauth2l le 12/11/2024, suite au pb de dl : https://github.com/google/oauth2l/issues/172
+  - image: zenika/oauth2l
 steps:
   - checkout
   - attach_workspace:
