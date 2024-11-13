@@ -14,9 +14,9 @@ workflows:
       - orb-tools/pack:
           filters: *filters
       - orb-tools/publish:
-          orb-name: zenika-training/training-resource
-          vcs-type: << pipeline.project.type >>
-          pub-type: production
+          orb_name: zenika-training/training-resource
+          vcs_type: << pipeline.project.type >>
+          pub_type: production
           requires:
             - orb-tools/pack
           context: orb-publishing
