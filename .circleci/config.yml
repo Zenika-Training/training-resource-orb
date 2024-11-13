@@ -17,7 +17,6 @@ workflows:
       - orb-tools/review:
           filters: *filters
           exclude: RC005,RC009
-          orb-name: zenika-training/training-resource
       - orb-tools/publish:
           orb-name: zenika-training/training-resource
           vcs-type: << pipeline.project.type >>
